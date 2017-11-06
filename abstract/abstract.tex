@@ -1,0 +1,21 @@
+\documentclass[12pt]{article}
+\nofiles
+
+\usepackage[left=0.8in,top=0.8in,right=0.8in,bottom=0.8in]{geometry}
+\setlength\parindent{24pt} %space for indentation
+
+\font\myfont=cmr12 at 13pt
+\title{\large \textbf{Final Project}}
+\author{{\myfont Justin Kang}\\ {\myfont AST 381: Planetary Astrophysics}}
+\date{\vspace{-0.75em} {\myfont November 2, 2017}}
+
+\begin{document}
+\maketitle
+
+
+\begin{abstract}
+\noindent Keck/NIRC2 uses AO to produce the highest-resolution ground-based images and spectroscopy in the 1-5 $\mu$m range. It is one of the best instruments for planet discovery and characterization, with 44 papers published to date that used it. However, there are several systematic errors that reduce its effectiveness and usability. Examples of these are read errors mirrored across the image quadrants, and the noisier lower-left quadrant. The current method of dealing with this noise is using a three-point dither pattern to reduce the effects of the bad quadrant and instrumental noise levels. We propose to instead create a model of these errors. By doing so, we can then attempt to eliminate the bad quadrant, allowing for more usable image space, and also improve the deepness of the images by removing instrumental noise in all quadrants. One possiblity is training a linear support vector machine and using it to classify sources as either real or noise. Linear classifiers are compact, fast to train, fast to execute, and can be trained on large amounts of data, making them an ideal tool for this application. Furthermore the KOA database makes readily available large amounts of both training and testing data. Thus by successfully modeling and eliminating this noise, we can improve one of the best ground-based instruments for future use.
+\end{abstract}
+
+
+\end{document}
