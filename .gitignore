@@ -2,3 +2,6 @@ __pycache__
 *.aux
 *.log
 *.out
+*.tar
+img/KOA_15135/*
+img/ROXs 12/*
