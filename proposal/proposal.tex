@@ -7,7 +7,6 @@
 \usepackage{comment}
 \usepackage{titlesec}
 \setlength\parindent{24pt} %space for indentation
-%\font\regfont=cmr12 at 13pt
 
 % The title of your proposal should be informative, and must not exceed two printed lines. Please use mixed case instead of all upper case.
 \title{\Large \textbf{Correcting Keck/NIRC2's Systematic Errors \\ Using Linear SVMs}}
@@ -46,12 +45,15 @@ The second generation Near-Infrared Camera (NIRC2) at Keck Observatory uses the 
 \subsection*{Linear SVMs and the Sliding Window Detection}
 % https://en.wikipedia.org/wiki/Support_vector_machine
 We now introduce a technique commonly used in the field of computer vision - the sliding window classification from Dalal and Triggs (2005), used commonly in pedestrian detection. This algorithm employs a sliding window to independently classify all iimage windows as being an object or non-object. Given heterogeneous training and testing data, we transform images to a histogram-of-gradients representation, train a linear classifier, and use this classifier to classify up to millions of sliding windows. Here the training data is initially a combination of positive training examples and a negative set free of the sample. The classifier is then trained, and the negative examples are searched for false positives. The classifier is then retrained using the initial set and the false positives to improve accuracy.\\
-\indent The benefits of using linear classifiers are that they are compact, fast to train, and fast to execute, allowing for quick verification of the results. The one we use here is a support vector machine - given a set of training examples, which are annotated as belonging to one of two categories (e.g. object or non-object), SVMs build a model that assigns new examples to one of the categories. The model is a representation of the examples as points in spaced, mapped so that the examples of the separate categories are divided by the widest gap possible. New examples are then mapped to that same space, and are assigned a category based on which side of the gap they're on. 
+\indent The benefits of using linear classifiers are that they are compact, fast to train, and fast to execute, allowing for quick verification of the results. The one we use here is a support vector machine - given a set of training examples, which are annotated as belonging to one of two categories (e.g. object or non-object), SVMs build a model that assigns new examples to one of the categories. The model is a representation of the examples as points in spaced, mapped so that the examples of the separate categories are divided by the widest gap possible. New examples are then mapped to that same space, and are assigned a category based on which side of the gap they're on.\\
 
 \subsection*{Proposed Program}
 % This section should present a balanced discussion of background information, the program’s goals, its significance to astronomy in general, and its importance for the specific sub-field of astronomy it addresses. 
 % AR Proposals should describe how the project improves upon or adds to the previous use of the data.
 % Calibration Proposals should describe what science will be enabled by the successful completion of the program, and how the currently supported core capabilities, their calibrations, and the existing pipeline or data reduction software are insufficient to meet the requirements of this type of science.
+We propose to create a model of these errors by training a linear support vector machine and use it to classify windows of Keck/NIRC2 images as either real or noisy data. Using this classifier, our goal is to thus eliminate the elevated noise in the lower-left quadrant by subtracting the effects of the noise. The direct benefit of this program would be to both improve the image quality and reliability of NIRC2 images, allowing for better data for anyone that uses the instrument.\\
+\indent In terms of benefits for direct imaging, this could improve both the deepness and scale of the images. For deepness, we would more reliably be able to tell whether an object in that quadrant is real or just noise, reducing the magnitude and effects of noise on the data. For scale, we could then expand to fully using the lower-left quadrant of the instrument rather than just using three quadrants like the 3-point dither method recommends, allowing for more objects to be captured in the image. Overall, this would lead to an effective increase in the resolution of the instrument, improving its accuracy even more.\\
+\indent Depending on the results, this could have impacts for other sub-fields of stronomy. Depending on how easy it is to generate training data for this noise, SVMs could be used to classify error in any other sets of imaging data. Due to the portability of this technique and its origins as a pure object detector, this method could easily be used in any application where such an image manipulation technique could be useful. SVMs are also starting to become an "outdated" technique in the field of computer vision. Assuming that this method works reliably, we can then attempt to introduce newer methods from computer vision and machine learning, and apply these to the field of astronomy. 
 
 
 \newpage
@@ -77,25 +79,35 @@ We now introduce a technique commonly used in the field of computer vision - the
 \section*{Analysis Plan}
 % All AR Proposals should provide a detailed data analysis plan and describe the datasets that will be analyzed. Proposers should complete the information required in the APT dataset table (see Section 8.14): the number of datasets (not pointings) per instrument needed to carry out the research and the type of data retrieval (ftp, DVD, or disk: see the HST Archive Data Retrieval Options for a description of the available options). Proposers must provide a schedule indicating the timescale for the data request(s), for example all datasets at once, or 1/12th of the datasets per month. Inclusion of a complete target list is not required.
 % Calibration Proposals should discuss what documentation, and data products and/or software will be made available to STScI to support future observing programs. Proposers should explain how their programs complement ongoing calibration efforts by the instrument groups. They should contact the relevant groups to ensure that efforts are not duplicated.
-blah blah blah
+The KOA database makes readily available large amounts of both training and testing data. We first must obtain training data of the errors in question. In computer vision this data is large, easily available, and well-annotated; unfortunately the field of astronomy is not so lucky. In order to generate this training data, we must look for examples where we see these errors, as demonstrated in Figure 2. Because these errors are not perfectly regular, one option of generating the training data - windows each containing one instance of an error, for example one vertical stripe error - is do manually go through a small subset of images and collecting each individual error. Attempts at automating this process can be made depending on the regularity of this error within images.\\
+\indent Once this training data is obtained, we first go through a training phase, training the classifier on these images annotated as errors, and samples of images known to not be error. Thus our SVM will be able to differentiate between these two windows through supervised learning. We then run this classifier on a small verification set. By doing so we can get an initial idea of the accuracy of our training, and gather false positives that result from the classifier. We then retrain the SVM based on these hard negatives to further improve it.\\
+\indent We then move onto our testing phase. We run our classifier on a set of completely new testing data - images that were not used for either training or verification. We can then determine accuracy by looking through each of the resulting images, seeing which windows were classified as errors, and noting both the true and false positive rates of the classifier. In order to do so, without a more regular error, we must manually go through each of the images and see whether errors exist, whether the classifier correctly identified them, and what else the classifier identified.\\
+\indent After identifying these errors with the classifier, we must remove them from the image. For now we propose a simple subtraction - once the windows in question are identified from the images, we can simply subtract the pixels that are relevant. In the case that there are objects in that area that amplify the intensity of these pixels, one method is to analyze the intensity properties of the noise itself. If it can be shown to be regular or match a certain pattern, then we can subtract this noise based on this assumed regularity. This would then better preserve any object that was hidden due to this noise in the quadrant.\\
+\indent The first image set this will be trained on is Bryan et al. (2016). The relative small size of this set allows for quick training and testing, allowing for easy predictions of the performance of this method. Depending on the success of this set, the second image set is that of Kraus et al. (2006). The advantage of this is the easily demonstratable 4-point dither method - after subtracting the errors on each of the images, we can check for recovery of each of the "real" objects that we expect in the lower-left quadrant based on what we know from other perspectives of the same image. These image sets can both be obtained immediately digitally through the KOA. Thus we can analyze the effectiveness of both the SVM in detecting errors, and the subtraction method in eliminating errors.
 
 
 \newpage
 \section*{Management Plan}
 % Provide a concise, but complete, management plan. This plan will be used by the review panels to assess the likely scale of the proposed research program. Proposers should include a schedule of the work required to achieve the scientific goals of the program, a description of the roles of the PI, Co-Is, postdocs, and students who will perform the analysis, and a plan to disseminate the results to the community.
-blah blah blah
+The PI will carry out all aspects of this program, from beginning to completion. The relevant data can almost immediately be obtained from the KOA. Once obtained, around a day will be needed to go through all of the images, finding the relevant ones with the errors, and generating the testing data. Several days will be needed to code the general algorithm, tune it for the purposes of this program, and debug it if necessary. Several hours will be needed to train the actual SVM, depending on the number of actual training samples generated. A day or two will then be needed to analyze the training results, make adjustments to the program if necessary, then retrain the classifier. Finally, several days will be needed to both produce and analyze the results of the program. Once these results are obtained, the code can be made openly available on Github for anyone interested in using the software, or exploring the application.
 
 
 \newpage
 \section*{References}
-\bibliography{mybib}
-
-% https://arxiv.org/pdf/0811.2606.pdf
 % https://arxiv.org/pdf/1411.3722.pdf
-% http://iopscience.iop.org/article/10.3847/1538-3881/aa6e01
-% https://arxiv.org/pdf/1709.01957.pdf
-% http://www.csd.uwo.ca/~olga/Courses/Fall2009/9840/Papers/DalalTriggsCVPR05.pdf
-% https://arxiv.org/pdf/astro-ph/0602449.pdf
+Bowler, B. et al. 2015, ApJS, 216, 53\\
 % https://arxiv.org/pdf/1606.06744.pdf
+Bryan, M et al. 2016, ApJ, 827, 16\\
+% http://iopscience.iop.org/article/10.3847/1538-3881/aa6e01
+Crossfield, I. et al. 2017, ApJ, 153, 255\\
+% http://www.csd.uwo.ca/~olga/Courses/Fall2009/9840/Papers/DalalTriggsCVPR05.pdf
+Dalal, N \& Triggs, B. 2005, CVPR, 1063-6919, 05\\
+% https://arxiv.org/pdf/astro-ph/0602449.pdf
+Kraus, A et al. 2006, ApJ, 649, 306\\
+% https://arxiv.org/pdf/0811.2606.pdf
+Marois, C. et al. 2008, Science, 322, 1348\\
+% https://arxiv.org/pdf/1709.01957.pdf
+Rodriguez, J. et al. 2017, arXiv:1709.01957
+
 
 \end{document}
