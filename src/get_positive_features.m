@@ -28,7 +28,7 @@ for i = 1:num_images
     end
     if (size(im,1) ~= params.template_size) || ...
        (size(im,2) ~= params.template_size)
-        im = imresize(im,[36,36]);
+        im = imresize(im,[params.template_size,params.template_size]);
     end
     hog = vl_hog(im,params.hog_cell_size);
     feats(i,:) = reshape(hog,1,dim);

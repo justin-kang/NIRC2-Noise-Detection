@@ -1,4 +1,3 @@
-% Starter code prepared by James Hays for CS 143, Brown University
 % This function returns detections on all of the images in a given path.
 % You will want to use non-maximum suppression on your detections or your
 % performance will be poor (the evaluation counts a duplicate detection as
@@ -6,8 +5,7 @@
 % starter code includes a call to a provided non-max suppression function.
 function [bboxes, confs, im_ids] = run_detector(test_path, w, b, params)
 % 'test_path' is a string. This directory contains images which may or may not 
-%   have faces in them. This function should work for the MIT+CMU test set but 
-%   also for any other images (e.g. class photos)
+%   have errors in them.
 % 'w' and 'b' are the linear classifier parameters
 % 'params' is a struct, with fields:
 % - template_size (probably 36), number of pixels spanned by each template
@@ -21,7 +19,7 @@ function [bboxes, confs, im_ids] = run_detector(test_path, w, b, params)
 % 'conf' is Nx1. conf(i) is the real valued confidence of detection i.
 % 'im_ids' is an Nx1 cell array. im_ids{i} is the image file name
 %   for detection i. (not the full path, just 'albert.jpg')
-SCALES = [1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
+SCALES = 1; %[1.0,0.9,0.8,0.7,0.6,0.5,0.4,0.3,0.2,0.1];
 THRESHOLD = 0.8;
 test_scenes = dir(fullfile(test_path,'*.jpg'));
 % the template dimensionality and number of cells
