@@ -13,7 +13,7 @@ pos_path = fullfile(data_path, 'train/pos/');
 % we can mine random or hard negatives from here
 neg_path = fullfile(data_path, 'train/neg/');
 % test set of images
-test_path = fullfile(data_path,'test/basic/'); 
+test_path = fullfile(data_path,'test/'); 
 % the samples are 16x16 pixels, which works fine as a template size.
 % add other fields to this struct if to modify HoG default
 % parameters such as the number of orientations
@@ -43,7 +43,7 @@ label_vector = [ones(size(feats,1),1);-ones(size(neg_feats,1),1)];
 % especially if trying hard negative mining.
 non_error_confs = confs(label_vector < 0);
 error_confs = confs(label_vector > 0);
-figure; 
+figure(1); 
 plot(sort(error_confs),'g'); hold on
 plot(sort(non_error_confs),'r'); 
 plot([0,size(non_error_confs,1)],[0 0],'b');
@@ -52,13 +52,13 @@ hold off;
 hog_cells = sqrt(length(w)/31); 
 im = single(reshape(w,[hog_cells hog_cells 31]));
 imhog = vl_hog('render',im,'verbose');
-figure;
+figure(2);
 imagesc(imhog);
 colormap gray;
-set(3,'Color',[.988,.988,.988]);
+set(2,'Color',[.988,.988,.988]);
 % lets UI-rendering catch up
 pause(0.1) 
-hog_template_image = frame2im(getframe(3));
+hog_template_image = frame2im(getframe(2));
 % getframe() is unreliable. depending on the rendering settings, it will
 % grab foreground windows instead of the figure in question. it could also
 % return a partial image.
