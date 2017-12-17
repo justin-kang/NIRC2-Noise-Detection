@@ -1,14 +1,12 @@
-% Starter code prepared by James Hays for CS 143, Brown University
-% This function should return all positive training examples (faces) from
-% 36x36 images in 'train_path'. Each face should be converted into a HoG 
-% template according to 'params'. For improved performance, try mirroring or 
-% warping the positive training examples.
+% this function should return all positive training examples from images in 
+% 'train_path'. each example should be converted into a HoG template according 
+% to 'params'. for improved performance, try mirror or warp the examples.
 function [feats] = get_positive_features(pos_path, params)
 % 'train_path' is a string. This directory contains 36x36 images of faces
 % 'params' is a struct, with fields:
-% - template_size (probably 36), number of pixels spanned by each template
-% - hog_cell_size (default 6), the number of pixels in each HoG cell. 
-%   template_size should be evenly divisible by hog_cell_size. Smaller HoG 
+% - template_size, number of pixels spanned by each template
+% - hog_cell_size, the number of pixels in each HoG cell. 
+%   template_size should be evenly divisible by hog_cell_size. smaller HoG 
 %   cell sizes tend to work better, but they make things slower because the 
 %   feature dimensionality increases and more importantly the step size of the 
 %   classifier decreases at test time.

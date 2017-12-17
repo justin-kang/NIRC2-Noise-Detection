@@ -1,16 +1,15 @@
-% This function returns detections on all of the images in a given path.
-% You will want to use non-maximum suppression on your detections or your
-% performance will be poor (the evaluation counts a duplicate detection as
-% wrong). The non-maximum suppression is done on a per-image basis. The
-% starter code includes a call to a provided non-max suppression function.
+% this function returns detections on all of the images in a given path.
+% use non-maximum suppression for good performance (the evaluation counts a 
+% duplicate detection as wrong). the non-maximum suppression is done on a 
+% per-image basis. 
 function [bboxes, confs, img_ids] = run_detector(test_path, w, b, params)
-% 'test_path' is a string. This directory contains images which may or may not 
+% 'test_path' is a string. this directory contains images which may or may not 
 %   have errors in them.
 % 'w' and 'b' are the linear classifier parameters
 % 'params' is a struct, with fields:
-% - template_size (probably 36), number of pixels spanned by each template
-% - hog_cell_size (default 6), the number of pixels in each HoG cell. 
-%   template_size should be evenly divisible by hog_cell_size. Smaller HoG 
+% - template_size, number of pixels spanned by each template
+% - hog_cell_size, the number of pixels in each HoG cell. 
+%   template_size should be evenly divisible by hog_cell_size. smaller HoG 
 %   cell sizes tend to work better, but they make things slower because the 
 %   feature dimensionality increases and more importantly the step size of the 
 %   classifier decreases at test time.
@@ -18,7 +17,7 @@ function [bboxes, confs, img_ids] = run_detector(test_path, w, b, params)
 %   [x_min, y_min, x_max, y_max] for detection i.
 % 'conf' is Nx1. conf(i) is the real valued confidence of detection i.
 % 'img_ids' is an Nx1 cell array. img_ids{i} is the image file name
-%   for detection i. (not the full path, just 'albert.jpg')
+%   for detection i. (not the full path, just 'image.jpg')
 THRESHOLD = 2.5;
 test_scenes = dir(fullfile(test_path,'*.jpg'));
 % the number of cells and template dimensionality

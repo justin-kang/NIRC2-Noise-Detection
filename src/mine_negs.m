@@ -1,12 +1,10 @@
-function [w,b] = ...
-    mine_negs(test_path, w, b, params, feats, neg_feats, LAMBDA)
-% 'test_path' is a string. This directory contains images which may or may not 
-%   have faces in them. This function should work for the MIT+CMU test set but 
-%   also for any other images (e.g. class photos)
+function [w,b] = mine_negs(test_path,w,b,params,feats,neg_feats,LAMBDA)
+% 'test_path' is a string. the path should contain examples that may or may not 
+%   have the desired object in them
 % 'w' and 'b' are the linear classifier parameters
 % 'params' is a struct, with fields:
-% - template_size (probably 36), number of pixels spanned by each template
-% - hog_cell_size (default 6), the number of pixels in each HoG cell. 
+% - template_size, number of pixels spanned by each template
+% - hog_cell_size, the number of pixels in each HoG cell. 
 %   template_size should be evenly divisible by hog_cell_size. Smaller HoG 
 %   cell sizes tend to work better, but they make things slower because the 
 %   feature dimensionality increases and more importantly the step size of the 
