@@ -31,9 +31,9 @@ confs = zeros(0,1);
 im_ids = cell(0,1);
 for i = 1:length(test_scenes)
     fprintf('Detecting faces in %s\n',test_scenes(i).name);
-    im = im2single(imread(fullfile(test_path,test_scenes(i).name)));
-    if (size(im,3) > 1)
-        im = rgb2gray(im);
+    img = im2single(imread(fullfile(test_path,test_scenes(i).name)));
+    if (size(img,3) > 1)
+        img = rgb2gray(img);
     end
     % the bounding box, confidence, and image ids for image i
     bbox = zeros(0,4);
@@ -41,7 +41,7 @@ for i = 1:length(test_scenes)
     im_id = cell(0,1);
     % go through different scales of the image
     for scale = SCALES
-        scale_im = imresize(im,scale);
+        scale_im = imresize(img,scale);
         test_hogs = vl_hog(scale_im,params.hog_cell_size);
         % obtain the hog features for each window in the image
         y_wins = floor(size(scale_im,1)/params.hog_cell_size) - cells + 1;
@@ -77,7 +77,7 @@ for i = 1:length(test_scenes)
     % You probably _don't_ want to threshold at 0.0, though. You can get 
     % higher recall with a lower threshold. You don't need to modify anything 
     % in non_max_supr_bbox, but you can.
-    [is_max] = non_max_supr_bbox(bbox,conf,size(im));
+    [is_max] = non_max_supr_bbox(bbox,conf,size(img));
     % update the image bounding box, confidence, and image ids
     bbox = bbox(is_max,:);
     conf = conf(is_max,:);

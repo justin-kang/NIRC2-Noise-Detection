@@ -31,8 +31,8 @@ neg_feats = get_random_negative_features(neg_path,params,NUM_NEG);
 % specified by 'w' and 'b' (w = slope, b = intercept)
 % 'LAMBDA' is an important parameter, try many values. Small values seem to
 % work best e.g. 0.0001, but you can try other values
-% TODO
-[w,b] = train_classifier(feats,neg_feats);
+LAMBDA = 0.0001;
+[w,b] = train_classifier(feats,neg_feats,LAMBDA);
 
 %% Step 3. Examine learned classifier
 % you don't need to modify anything in this section. the section first
@@ -41,7 +41,6 @@ neg_feats = get_random_negative_features(neg_path,params,NUM_NEG);
 fprintf('Initial classifier performance on train data:\n')
 confs = [feats; neg_feats] * w + b;
 label_vector = [ones(size(feats,1),1);-ones(size(neg_feats,1),1)];
-% TODO
 [tp_rate,fp_rate,tn_rate,fn_rate] = report_accuracy(confs,label_vector);
 % visualize how well separated the positive and negative examples are at
 % training time. sometimes this can idenfity odd biases in your training

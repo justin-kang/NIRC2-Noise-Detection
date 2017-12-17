@@ -3,7 +3,7 @@
 % images in 'neg_path'. Images should be converted to grayscale, because the 
 % positive training data is only available in grayscale. For best performance, 
 % you should sample random negative examples at multiple scales.
-function neg_feats = get_random_negative_features(neg_path, params, samples)
+function [neg_feats] = get_random_negative_features(neg_path, params, samples)
 % 'neg_path' is a string. This directory contains images which have no faces.
 % 'params' is a struct, with fields:
 % - template_size (probably 36), number of pixels spanned by each template
