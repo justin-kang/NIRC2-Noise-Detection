@@ -1,5 +1,4 @@
-% Starter code prepared by James Hays for CS 143, Brown University
-% This function should return negative training examples (non-faces) from any 
+% This function should return negative training examples (non-objects) from any 
 % images in 'neg_path'. Images should be converted to grayscale, because the 
 % positive training data is only available in grayscale. For best performance, 
 % you should sample random negative examples at multiple scales.
@@ -12,9 +11,9 @@ function [neg_feats] = get_random_negative_features(neg_path, params, samples)
 %   cell sizes tend to work better, but they make things slower because the 
 %   feature dimensionality increases and more importantly the step size of the 
 %   classifier decreases at test time.
-% 'samples' is the number of random negatives to be mined, it's not
-%   important for the function to find exactly 'samples' non-face features, 
-%   e.g. you might try to sample some number from each image, but some images 
+% 'samples' is the number ofon to find exactly 'samples' non-face features, 
+%   e.g. you might try to sarandom negatives to be mined, it's not
+%   important for the functim ple some number from each image, but some images 
 %   might be too small to find enough.
 % 'neg_feats' is NxD matrix where N is 'samples' and D is the template 
 %   dimensionality, which would be (template_size/hog_cell_size)^2*31
@@ -25,33 +24,33 @@ num_images = length(image_files);
 dim = (params.template_size/params.hog_cell_size)^2*31;
 neg_feats = zeros(samples,dim);
 % the number of samples per image
-im_samples = round(samples/num_images);
+img_samples = round(samples/num_images);
 % obtain the HoGs for each image
 count = 1;
 for i = 1:num_images
-    im = im2single(imread(fullfile(neg_path,image_files(i).name)));
-    if (size(im,3) > 1)
-        im = rgb2gray(im);
+    img = im2single(imread(fullfile(neg_path,image_files(i).name)));
+    if size(img,3) > 1
+        img = rgb2gray(img);
     end
     % choose random samples from each image and obtain their HoGs
-    for j = 1:im_samples
-        r = ceil((size(im,1)-params.template_size)*rand());
-        c = ceil((size(im,2)-params.template_size)*rand());
-        im_patch = im(r:r+params.template_size-1,c:c+params.template_size-1);
-        hog = vl_hog(im_patch,params.hog_cell_size);
+    for j = 1:img_samples
+        r = ceil((size(img,1)-params.template_size)*rand());
+        c = ceil((size(img,2)-params.template_size)*rand());
+        img_patch = img(r:r+params.template_size-1,c:c+params.template_size-1);
+        hog = vl_hog(img_patch,params.hog_cell_size);
         neg_feats(count,:) = reshape(hog,1,dim);
         count = count + 1;
     end
 end
 % check if samples has been reached, randomly sampling patches from random
 % images if not
-while (count <= samples)
-    im = im2single(imread(fullfile(neg_path, ...
+while count <= samples
+    img = im2single(imread(fullfile(neg_path, ...
         image_files(ceil(num_images*rand())).name)));
-    r = ceil((size(im,1)-params.template_size)*rand());
-    c = ceil((size(im,2)-params.template_size)*rand());
-    im_patch = im(r:r+params.template_size-1,c:c+params.template_size-1);
-    hog = vl_hog(im_patch,params.hog_cell_size);
+    r = ceil((size(img,1)-params.template_size)*rand());
+    c = ceil((size(img,2)-params.template_size)*rand());
+    img_patch = img(r:r+params.template_size-1,c:c+params.template_size-1);
+    hog = vl_hog(img_patch,params.hog_cell_size);
     neg_feats(count,:) = reshape(hog,1,dim);
     count = count + 1;
 end
