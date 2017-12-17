@@ -6,7 +6,6 @@ warning off;
 close all;
 clear;
 run('vlfeat/toolbox/vl_setup');
-[~,~,~] = mkdir('visualizations');
 data_path = '../img/';
 % positive training examples.
 pos_path = fullfile(data_path, 'train/pos/');
@@ -48,6 +47,9 @@ plot(sort(error_confs),'g'); hold on
 plot(sort(non_error_confs),'r'); 
 plot([0,size(non_error_confs,1)],[0 0],'b');
 hold off;
+pause(0.1)
+separation = frame2im(getframe(1));
+imwrite(separation,'../img/output/separation.png')
 % visualize the learned detector. 
 hog_cells = sqrt(length(w)/31); 
 im = single(reshape(w,[hog_cells hog_cells 31]));
@@ -56,13 +58,9 @@ figure(2);
 imagesc(imhog);
 colormap gray;
 set(2,'Color',[.988,.988,.988]);
-% lets UI-rendering catch up
 pause(0.1) 
 hog_template_image = frame2im(getframe(2));
-% getframe() is unreliable. depending on the rendering settings, it will
-% grab foreground windows instead of the figure in question. it could also
-% return a partial image.
-imwrite(hog_template_image,'visualizations/hog_template.png')
+imwrite(hog_template_image,'../img/output/hog_template.png')
 
 %% Step 4. Mine hard negatives
 % can get very good performance by using random negatives, so hard negative 
@@ -79,4 +77,4 @@ imwrite(hog_template_image,'visualizations/hog_template.png')
 [bboxes,confs,im_ids] = run_detector(test_path,w,b,params);
 
 %% Step 6. Visualize detections
-visualize_detections_by_image_no_gt(bboxes,confs,im_ids,test_path)
+visualize_detections_by_image_no_gt(bboxes,im_ids,test_path)

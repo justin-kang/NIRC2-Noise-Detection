@@ -22,10 +22,10 @@ bboxes(x_out_of_bounds,3) = img_size(2);
 bboxes(y_out_of_bounds,4) = img_size(1);
 num_detections = size(confidences,1);
 % higher confidence detections get priority.
-[confidences,ind] = sort(confidences,'descend');
+[~,ind] = sort(confidences,'descend');
 bboxes = bboxes(ind,:);
 % indicator for whether each bbox will be accepted or suppressed
-is_valid_bbox = logical(zeros(1,num_detections)); 
+is_valid_bbox = false(1,num_detections); 
 for i = 1:num_detections
     cur_bb = bboxes(i,:);
     cur_bb_is_valid = true;
@@ -62,5 +62,3 @@ end
 %of the input bboxes and confidences
 reverse_map(ind) = 1:num_detections;
 is_valid_bbox = is_valid_bbox(reverse_map);
-fprintf('non-max suppression: %d detections to %d final bounding boxes\n', ...
-    num_detections, sum(is_valid_bbox));

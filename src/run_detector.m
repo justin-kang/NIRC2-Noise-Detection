@@ -28,7 +28,6 @@ bboxes = zeros(0,4);
 confs = zeros(0,1);
 img_ids = cell(0,1);
 for i = 1:length(test_scenes)
-    fprintf('Detecting errors in %s\n',test_scenes(i).name);
     img = im2single(imread(fullfile(test_path,test_scenes(i).name)));
     if (size(img,3) > 1)
         img = rgb2gray(img);
